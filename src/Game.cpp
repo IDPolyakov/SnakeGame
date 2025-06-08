@@ -4,7 +4,6 @@ Game::Game() :
 	window(VideoMode({ WIDTH, HEIGHT }), "Snake!"),
 	timer(0), delay(0.1)
 {
-	font.openFromFile("C:/Windows/Fonts/Arial.ttf");
 	food = Food(snake.getBody());
 }
 
@@ -30,19 +29,28 @@ void Game::proccesEvents()
 	{
 		if (event->is<Event::Closed>())
 			window.close();
+		snake.handleInput();
+		if (Keyboard::isKeyPressed(Keyboard::Key::R))
+			reset();
 	}
-	snake.handleInput();
 }
 void Game::update()
 {
 	if (snake.checkCollision())
 		window.close();
-	window.setTitle("Snake. Score: " + std::to_string(snake.getScore()));
+	window.setTitle("Snake. Score: " + to_string(snake.getScore()));
 }
 void Game::render()
 {
-	window.clear(sf::Color::Black);
+	window.clear(Color::Black);
 	snake.draw(window, timer / delay);
 	food.draw(window);
 	window.display();
+}
+void Game::reset()
+{
+	snake = Snake();
+	food = Food(snake.getBody());
+	timer = 0;
+	delay = 0.1;
 }

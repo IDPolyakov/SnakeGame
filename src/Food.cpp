@@ -11,13 +11,13 @@ Food::Food(const deque<Segment>& snake)
 void Food::respawn(const deque<Segment>& snake)
 {
 	static mt19937 rnd(time(0));
-	auto dice_x = bind(uniform_int_distribution<ll>(0, WIDTH / CELL - 1), rnd);
-	auto dice_y = bind(uniform_int_distribution<ll>(0, HEIGHT / CELL - 1), rnd);
+	uniform_int_distribution<ll> dice_x(0, WIDTH / CELL - 1);
+	uniform_int_distribution<ll> dice_y(0, HEIGHT / CELL - 1);
 
 	while (true)
 	{
-		x = dice_x();
-		y = dice_y();
+		x = dice_x(rnd);
+		y = dice_y(rnd);
 		bool onSnake = false;
 		for (const auto& s : snake)
 			if (s.x == x && s.y == y)

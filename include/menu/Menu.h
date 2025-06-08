@@ -1,8 +1,6 @@
 ﻿#pragma once
 #include <SFML/Graphics.hpp>
 #include <bits/stdc++.h>
-#include "Food.h"
-#include "Snake.h"
 //❤//
 typedef long long ll;
 typedef long double ld;
@@ -26,21 +24,15 @@ typedef unsigned long long ull;
 using namespace std;
 using namespace sf;
 
-class Game
+class Menu 
 {
 public:
-	Game();
-	void run();
+	Menu(ld width, ld height, const Font& font);
+	void draw(RenderWindow& window);
+	void moveUp();
+	void moveDown();
+	ll getSelectedIndex() const;
 private:
-	void proccesEvents();
-	void update();
-	void render();
-	void reset();
-
-	RenderWindow window;
-	Clock clock;
-	Snake snake;
-	Food food;
-	ld timer, delay;
+	ll selectedIndex;
+	vector<Text> menuItems;
 };
-
