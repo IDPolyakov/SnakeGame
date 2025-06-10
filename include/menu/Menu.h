@@ -27,12 +27,16 @@ using namespace sf;
 class Menu 
 {
 public:
-	Menu(ld width, ld height, const Font& font);
+	Menu(ld width, ld height, const Font& font, const Texture& back);
 	void draw(RenderWindow& window);
 	void moveUp();
 	void moveDown();
 	ll getSelectedIndex() const;
+	void setBackground(RenderWindow& window);
 private:
+	Clock clock;
+	Text title;
 	ll selectedIndex;
 	vector<Text> menuItems;
+	Sprite Background;
 };

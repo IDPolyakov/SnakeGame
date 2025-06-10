@@ -6,8 +6,11 @@ using namespace std;
 int main()
 {
 	RenderWindow window(VideoMode({ WIDTH, HEIGHT }), "Snake!");
-	Font font("C:/Windows/Fonts/Arial.ttf");
-	Menu menu(WIDTH, HEIGHT, font);
+	Image icon("./resources/icon.png");
+	window.setIcon(icon);
+	Font font("./resources/fonts/arial.ttf");
+	Texture back("./resources/background.jpg");
+	Menu menu(WIDTH, HEIGHT, font, back);
 	bool gameRunning = false;
 	while (window.isOpen())
 	{
@@ -34,7 +37,9 @@ int main()
 
 		window.clear(Color::Black);
 		if (!gameRunning)
+		{
 			menu.draw(window);
+		}
 		else
 		{
 			Game game;
