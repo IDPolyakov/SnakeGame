@@ -30,3 +30,12 @@ void Food::draw(RenderWindow& window)
 	shape.setPosition({ float(x * CELL), float(y * CELL) });
 	window.draw(shape);
 }
+void Food::loadEatSound()
+{
+	eatSound.openFromFile("./resources/eat.mp3");
+	eatSound.setVolume(100);
+}
+void Food::playEatSound()
+{
+	eatSound.play();
+}

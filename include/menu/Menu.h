@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <bits/stdc++.h>
 //❤//
 typedef long long ll;
@@ -33,10 +34,12 @@ public:
 	void moveDown();
 	ll getSelectedIndex() const;
 	void setBackground(RenderWindow& window);
+	void playConfirmSound();
 private:
 	Clock clock;
 	Text title;
 	ll selectedIndex;
 	vector<Text> menuItems;
 	Sprite Background;
+	Music choiceSound, confirmSound;
 };

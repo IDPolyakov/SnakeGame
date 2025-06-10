@@ -27,6 +27,7 @@ int main()
 					menu.moveDown();
 				else if (Keyboard::isKeyPressed(Keyboard::Key::Enter))
 				{
+					menu.playConfirmSound();
 					if (menu.getSelectedIndex() == 0)
 						gameRunning = true;
 					else if (menu.getSelectedIndex() == 2)
@@ -42,7 +43,7 @@ int main()
 		}
 		else
 		{
-			Game game;
+			Game game(icon);
 			game.run();
 			gameRunning = false;
 		}

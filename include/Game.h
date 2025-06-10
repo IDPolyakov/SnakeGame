@@ -29,7 +29,7 @@ using namespace sf;
 class Game
 {
 public:
-	Game();
+	Game(Image& icon);
 	void run();
 private:
 	void proccesEvents();

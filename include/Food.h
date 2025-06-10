@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <bits/stdc++.h>
 #include "Constants.h"
 //❤//
@@ -34,9 +35,12 @@ public:
 	Food(const deque<Segment>& snake);
 	void respawn(const deque<Segment>& snake);
 	void draw(RenderWindow& window);
+	void loadEatSound();
+	void playEatSound();
 
 	ll x, y;
 private:
+	Music eatSound;
 	CircleShape shape;
 };
 

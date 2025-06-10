@@ -4,20 +4,26 @@ Menu::Menu(ld width, ld height, const Font& font, const Texture& back) : title(f
 {
 	vector<string> items = {
 		"Play",
-		"Options",
+		"Settings",
 		"Exit"
 	};
 	selectedIndex = 0;
 	for (ll i = 0; i < items.size(); i++)
 	{
 		Text text(font, items[i]);
-		text.setFillColor(i == 0 ? Color::Yellow : Color(200, 200, 200));
+		text.setFillColor(i == selectedIndex ? Color::Yellow : Color(200, 200, 200));
 		text.setOutlineColor(sf::Color::Black);
 		text.setOutlineThickness(2);
 		text.setPosition({ float(width / 2.f - 60), float(height / 4.f + i * 90) });
 		text.setCharacterSize(i == selectedIndex ? 46 : 40);
 		menuItems.pb(text);
 	}
+
+	confirmSound.openFromFile("./resources/confirm.mp3");
+	confirmSound.setVolume(100);
+
+	choiceSound.openFromFile("./resources/choice.mp3");
+	choiceSound.setVolume(100);
 
 	title.setFont(font);
 	title.setString("Snake Game");
@@ -30,6 +36,7 @@ void Menu::draw(RenderWindow& window)
 {
 	window.draw(Background);
 	window.draw(title);
+
 
 	float time = static_cast<float>(clock.getElapsedTime().asMilliseconds());
 	float scale = 1.f + 0.05f * sin(time * 0.005f);
@@ -46,6 +53,7 @@ void Menu::moveUp()
 {
 	if (selectedIndex > 0)
 	{
+		choiceSound.play();
 		menuItems[selectedIndex].setFillColor(Color::White);
 		menuItems[selectedIndex].setCharacterSize(40);
 		selectedIndex--;
@@ -58,6 +66,7 @@ void Menu::moveDown()
 {
 	if (selectedIndex < menuItems.size() - 1)
 	{
+		choiceSound.play();
 		menuItems[selectedIndex].setFillColor(Color::White);
 		menuItems[selectedIndex].setCharacterSize(40);
 		selectedIndex++;
@@ -69,4 +78,8 @@ void Menu::moveDown()
 ll Menu::getSelectedIndex() const
 {
 	return selectedIndex;
+}
+void Menu::playConfirmSound()
+{
+	confirmSound.play();
 }

@@ -38,6 +38,7 @@ void Snake::update(Food& food, ld& delay)
 	body.push_front(head);
 	if (head.x == food.x && head.y == food.y)
 	{
+		food.playEatSound();
 		food.respawn(body);
 		delay *= 0.98;
 	}

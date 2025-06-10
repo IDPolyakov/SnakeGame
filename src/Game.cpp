@@ -1,10 +1,12 @@
 #include "../include/Game.h"
 
-Game::Game() :
+Game::Game(Image& icon) :
 	window(VideoMode({ WIDTH, HEIGHT }), "Snake!"),
 	timer(0), delay(0.1)
 {
+	window.setIcon(icon);
 	food = Food(snake.getBody());
+	food.loadEatSound();
 }
 
 void Game::run()
