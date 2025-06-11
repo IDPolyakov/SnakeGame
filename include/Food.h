@@ -1,27 +1,8 @@
 ﻿#pragma once
+#include <bits/stdc++.h>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include <bits/stdc++.h>
 #include "Constants.h"
-//❤//
-typedef long long ll;
-typedef long double ld;
-typedef unsigned long long ull;
-//❤//
-#define full cin.tie(0);std::ios::sync_with_stdio(false);
-//❤//
-#define pb push_back
-#define mp make_pair
-//❤//
-#define INF numeric_limits<ll>::max()
-#define EPS 100000000000000007
-//❤//
-#define vi vector<ll>
-#define vvi vector<vector<ll>>
-#define vd vector<ld> 
-//❤//
-#define all(a) a.begin(), a.end()
-#define endl "\n"
 //❤//
 using namespace std;
 using namespace sf;
@@ -32,15 +13,27 @@ class Food
 {
 public:
 	Food();
-	Food(const deque<Segment>& snake);
+	~Food();
+	explicit Food(const deque<Segment>& snake);
 	void respawn(const deque<Segment>& snake);
 	void draw(RenderWindow& window);
 	void loadEatSound();
 	void playEatSound();
 
-	ll x, y;
+	Food(const Food&) = delete;
+	Food& operator=(const Food&) = delete;
+
+	size_t getX() const { return x; }
+	size_t getY() const { return y; }
 private:
-	Music eatSound;
+	void initializeShape();
+	bool isPositionValid(size_t foodX, size_t foodY, const std::deque<Segment>& snake) const;
+
+	unsigned x = 0;
+	unsigned y = 0;
+
 	CircleShape shape;
+	unique_ptr<SoundBuffer> eatSoundBuffer;
+	unique_ptr<Sound> eatSound;
 };
 

@@ -3,25 +3,6 @@
 #include "Food.h"
 #include <SFML/Graphics.hpp>
 //❤//
-typedef long long ll;
-typedef long double ld;
-typedef unsigned long long ull;
-//❤//
-#define full cin.tie(0);std::ios::sync_with_stdio(false);
-//❤//
-#define pb push_back
-#define mp make_pair
-//❤//
-#define INF numeric_limits<ll>::max()
-#define EPS 100000000000000007
-//❤//
-#define vi vector<ll>
-#define vvi vector<vector<ll>>
-#define vd vector<ld> 
-//❤//
-#define all(a) a.begin(), a.end()
-#define endl "\n"
-//❤//
 using namespace std;
 using namespace sf;
 
@@ -29,22 +10,34 @@ enum class Direction { Up, Down, Left, Right };
 
 struct Segment
 {
-	ll x, y;
-	Segment(ll x, ll y) : x(x), y(y) {}
+    size_t x;
+    size_t y;
+	Segment(size_t x, size_t y) : x(x), y(y) {}
 };
 
 class Snake
 {
 public:
     Snake();
+
     void handleInput();
-    void update(Food& food, ld& delay);
-    void draw(RenderWindow& window, ld alpha);
-    bool checkCollision();
-    ll getScore() const;
+    void update(Food& food, float& delay);
+    void draw(RenderWindow& window, float alpha);
+    bool checkCollision() const;
+    size_t getScore() const;
     const deque<Segment>& getBody() const;
+    void reset();
+
+    Snake(const Snake&) = delete;
+    Snake& operator=(const Snake&) = delete;
 private:
-    deque<Segment> body, prevBody;
-    Direction dir;
+    void moveHead();
+    void checkFoodCollision(Food& food, float& delay);
+    void drawHead(RenderWindow& window, const float x, const float y);
+    void drawBodySegment(RenderWindow& window, const float x, const float y, bool isHead);
+
+    deque<Segment> body;
+    deque<Segment> prevBody;
+    Direction direction;
 };
 

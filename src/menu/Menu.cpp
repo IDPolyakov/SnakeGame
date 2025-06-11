@@ -1,85 +1,152 @@
 #include "../../include/menu/Menu.h";
 
-Menu::Menu(ld width, ld height, const Font& font, const Texture& back) : title(font), Background(back)
+namespace {
+	constexpr float MENU_ITEM_X_OFFSET = 60.0f;
+	constexpr float MENU_ITEM_Y_OFFSET = 90.0f;
+	constexpr float MENU_ITEM_Y_START = 4.0f;
+	constexpr float TITLE_X_OFFSET = 180.0f;
+	constexpr float TITLE_Y_OFFSET = 150.0f;
+
+	const Color SELECTED_COLOR = Color::Yellow;
+	const Color UNSELECTED_COLOR = Color(200, 200, 200);
+	const Color TITLE_COLOR = Color(255, 0, 0);
+	const Color OUTLINE_COLOR = Color::Black;
+
+	constexpr unsigned SELECTED_CHAR_SIZE = 46;
+	constexpr unsigned UNSELECTED_CHAR_SIZE = 40;
+	constexpr unsigned TITLE_CHAR_SIZE = 60;
+	constexpr unsigned OUTLINE_THICKNESS = 2;
+
+	constexpr float ANIMATION_SPEED = 0.005f;
+	constexpr float ANIMATION_SCALE = 0.05f;
+	constexpr float SOUND_VOLUME = 100.f;
+}
+
+Menu::Menu(float width, float height, const Font& font, const Texture& back) 
+	: title(font),
+	Background(back)
 {
-	vector<string> items = {
+	initializeMenuItems(width, height, font);
+	initializeSounds();
+	initializeTitle(width, height);
+}
+
+Menu::~Menu() = default;
+
+void Menu::initializeMenuItems(float width, float height, const Font& font)
+{
+	const vector<string> menuItemLabels = {
 		"Play",
 		"Settings",
 		"Exit"
 	};
-	selectedIndex = 0;
-	for (ll i = 0; i < items.size(); i++)
+	for (size_t i = 0; i < menuItemLabels.size(); i++)
 	{
-		Text text(font, items[i]);
-		text.setFillColor(i == selectedIndex ? Color::Yellow : Color(200, 200, 200));
-		text.setOutlineColor(sf::Color::Black);
-		text.setOutlineThickness(2);
-		text.setPosition({ float(width / 2.f - 60), float(height / 4.f + i * 90) });
-		text.setCharacterSize(i == selectedIndex ? 46 : 40);
-		menuItems.pb(text);
+		Text text(font, menuItemLabels[i]);
+
+		const bool isSelected = (i == selectedIndex);
+		text.setFillColor(i == selectedIndex ? SELECTED_COLOR : UNSELECTED_COLOR);
+		text.setOutlineColor(OUTLINE_COLOR);
+		text.setOutlineThickness(OUTLINE_THICKNESS);
+		text.setCharacterSize(isSelected ? SELECTED_CHAR_SIZE : UNSELECTED_CHAR_SIZE);
+
+		const float xPosition = static_cast<float>(width) / 2.f - MENU_ITEM_X_OFFSET;
+		const float yPosition = static_cast<float>(height) / MENU_ITEM_Y_START + i * MENU_ITEM_Y_OFFSET;
+		text.setPosition({ xPosition, yPosition});
+		menuItems.push_back(text);
 	}
+}
 
-	confirmSound.openFromFile("./resources/confirm.mp3");
-	confirmSound.setVolume(100);
+void Menu::initializeSounds()
+{
+	confirmSoundBuffer = make_unique<SoundBuffer>("./resources/confirm.mp3");
+	confirmSound = make_unique<Sound>(*confirmSoundBuffer);
+	confirmSound->setVolume(SOUND_VOLUME);
 
-	choiceSound.openFromFile("./resources/choice.mp3");
-	choiceSound.setVolume(100);
+	choiceSoundBuffer = make_unique<SoundBuffer>("./resources/choice.mp3");
+	choiceSound = make_unique<Sound>(*choiceSoundBuffer);
+	choiceSound->setVolume(SOUND_VOLUME);
+}
 
-	title.setFont(font);
+void Menu::initializeTitle(float width, float height)
+{
 	title.setString("Snake Game");
-	title.setCharacterSize(60);
-	title.setFillColor(Color(255, 0, 0));
+	title.setCharacterSize(TITLE_CHAR_SIZE);
+	title.setFillColor(TITLE_COLOR);
 	title.setStyle(Text::Bold | Text::Underlined);
-	title.setPosition({ float(width / 2.f - 180), float(height / 4.f - 150) });
+
+	const float xPosition = static_cast<float>(width) / 2.0f - TITLE_X_OFFSET;
+	const float yPosition = static_cast<float>(height) / MENU_ITEM_Y_START - TITLE_Y_OFFSET;
+	title.setPosition({ xPosition, yPosition });
 }
 void Menu::draw(RenderWindow& window)
 {
 	window.draw(Background);
 	window.draw(title);
 
+	updateMenuItemsAnimation();
 
 	float time = static_cast<float>(clock.getElapsedTime().asMilliseconds());
 	float scale = 1.f + 0.05f * sin(time * 0.005f);
-	for (ll i = 0; i < menuItems.size(); i++)
+	for (const auto& item : menuItems)
+		window.draw(item);
+}
+
+void Menu::updateMenuItemsAnimation()
+{
+	const float time = static_cast<float>(clock.getElapsedTime().asMilliseconds());
+	const float scale = 1.f + ANIMATION_SCALE * sin(time * ANIMATION_SPEED);
+
+	for (size_t i = 0; i < menuItems.size(); i++)
 	{
 		if (i == selectedIndex)
 			menuItems[i].setScale({ scale, scale });
 		else
 			menuItems[i].setScale({ 1.f, 1.f });
-		window.draw(menuItems[i]);
 	}
 }
+
+void Menu::moveSelection(size_t direction)
+{
+	const size_t newIndex = selectedIndex + direction;
+
+	if (newIndex >= 0 && newIndex < menuItems.size())
+	{
+		playChoiceSound();
+		updateSelectedItem(selectedIndex, false);
+		selectedIndex = newIndex;
+		updateSelectedItem(selectedIndex, true);
+		clock.restart();
+	}
+}
+
+void Menu::updateSelectedItem(size_t index, bool isSelected)
+{
+	menuItems[index].setFillColor(isSelected ? SELECTED_COLOR : UNSELECTED_COLOR);
+	menuItems[index].setCharacterSize(isSelected ? SELECTED_CHAR_SIZE : UNSELECTED_CHAR_SIZE);
+}
+
 void Menu::moveUp()
 {
-	if (selectedIndex > 0)
-	{
-		choiceSound.play();
-		menuItems[selectedIndex].setFillColor(Color::White);
-		menuItems[selectedIndex].setCharacterSize(40);
-		selectedIndex--;
-		menuItems[selectedIndex].setFillColor(Color::Yellow);
-		menuItems[selectedIndex].setCharacterSize(46);
-		clock.restart();
-	}
+	moveSelection(-1);
 }
+
 void Menu::moveDown()
 {
-	if (selectedIndex < menuItems.size() - 1)
-	{
-		choiceSound.play();
-		menuItems[selectedIndex].setFillColor(Color::White);
-		menuItems[selectedIndex].setCharacterSize(40);
-		selectedIndex++;
-		menuItems[selectedIndex].setFillColor(Color::Yellow);
-		menuItems[selectedIndex].setCharacterSize(46);
-		clock.restart();
-	}
+	moveSelection(1);
 }
-ll Menu::getSelectedIndex() const
+
+size_t Menu::getSelectedIndex() const
 {
 	return selectedIndex;
 }
+
 void Menu::playConfirmSound()
 {
-	confirmSound.play();
+	confirmSound->play();
+}
+
+void Menu::playChoiceSound()
+{
+	choiceSound->play();
 }

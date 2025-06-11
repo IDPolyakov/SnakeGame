@@ -1,45 +1,45 @@
 ﻿#pragma once
+#include <bits/stdc++.h>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include <bits/stdc++.h>
-//❤//
-typedef long long ll;
-typedef long double ld;
-typedef unsigned long long ull;
-//❤//
-#define full cin.tie(0);std::ios::sync_with_stdio(false);
-//❤//
-#define pb push_back
-#define mp make_pair
-//❤//
-#define INF numeric_limits<ll>::max()
-#define EPS 100000000000000007
-//❤//
-#define vi vector<ll>
-#define vvi vector<vector<ll>>
-#define vd vector<ld> 
-//❤//
-#define all(a) a.begin(), a.end()
-#define endl "\n"
 //❤//
 using namespace std;
 using namespace sf;
 
-class Menu 
+class Menu
 {
 public:
-	Menu(ld width, ld height, const Font& font, const Texture& back);
+	Menu(float width, float height, const Font& font, const Texture& background);
+	~Menu();
+
 	void draw(RenderWindow& window);
 	void moveUp();
 	void moveDown();
-	ll getSelectedIndex() const;
-	void setBackground(RenderWindow& window);
+
+	size_t getSelectedIndex() const;
 	void playConfirmSound();
+	void playChoiceSound();
+
+	Menu(const Menu&) = delete;
+	Menu& operator = (const Menu&) = delete;
+
+private:
+	void initializeMenuItems(float width, float height, const Font& font);
+	void initializeSounds();
+	void initializeTitle(float width, float height);
+	void updateMenuItemsAnimation();
+	void moveSelection(size_t direction);
+	void updateSelectedItem(size_t index, bool isSelected);
+
 private:
 	Clock clock;
 	Text title;
-	ll selectedIndex;
+	size_t selectedIndex = 0;
 	vector<Text> menuItems;
 	Sprite Background;
-	Music choiceSound, confirmSound;
+
+	unique_ptr<SoundBuffer> choiceSoundBuffer;
+	unique_ptr<SoundBuffer> confirmSoundBuffer;
+	unique_ptr<Sound> choiceSound;
+	unique_ptr<Sound> confirmSound;
 };
