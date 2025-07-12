@@ -2,11 +2,11 @@
 
 namespace {
 	constexpr float INITIAL_DELAY = 0.1f;
-	const string WINDOW_TITLE = "Snake Game";
+	const std::string WINDOW_TITLE = "Snake Game";
 }
 
-Game::Game(Image& icon) :
-	window(VideoMode({ WIDTH, HEIGHT }), WINDOW_TITLE),
+Game::Game(sf::Image& icon) :
+	window(sf::VideoMode({ WIDTH, HEIGHT }), WINDOW_TITLE),
 	snake(),
 	food(snake.getBody())
 {
@@ -40,10 +40,10 @@ void Game::proccesEvents()
 {
 	while (const auto event = window.pollEvent())
 	{
-		if (event->is<Event::Closed>())
+		if (event->is<sf::Event::Closed>())
 			window.close();
 		snake.handleInput();
-		if (Keyboard::isKeyPressed(Keyboard::Key::R))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R))
 			reset();
 	}
 }
@@ -51,11 +51,11 @@ void Game::update()
 {
 	if (snake.checkCollision())
 		window.close();
-	window.setTitle(WINDOW_TITLE + " Score: " + to_string(snake.getScore()));
+	window.setTitle(WINDOW_TITLE + " Score: " + std::to_string(snake.getScore()));
 }
 void Game::render()
 {
-	window.clear(Color::Black);
+	window.clear(sf::Color::Black);
 	snake.draw(window, gameTimer / gameDelay);
 	food.draw(window);
 	window.display();

@@ -1,4 +1,4 @@
-#include "../../include/menu/Menu.h";
+#include "../../include/menu/Menu.h"
 
 namespace {
 	constexpr float MENU_ITEM_X_OFFSET = 60.0f;
@@ -7,10 +7,10 @@ namespace {
 	constexpr float TITLE_X_OFFSET = 180.0f;
 	constexpr float TITLE_Y_OFFSET = 150.0f;
 
-	const Color SELECTED_COLOR = Color::Yellow;
-	const Color UNSELECTED_COLOR = Color(200, 200, 200);
-	const Color TITLE_COLOR = Color(255, 0, 0);
-	const Color OUTLINE_COLOR = Color::Black;
+	const sf::Color SELECTED_COLOR = sf::Color::Yellow;
+	const sf::Color UNSELECTED_COLOR = sf::Color(200, 200, 200);
+	const sf::Color TITLE_COLOR = sf::Color(255, 0, 0);
+	const sf::Color OUTLINE_COLOR = sf::Color::Black;
 
 	constexpr unsigned SELECTED_CHAR_SIZE = 46;
 	constexpr unsigned UNSELECTED_CHAR_SIZE = 40;
@@ -22,8 +22,10 @@ namespace {
 	constexpr float SOUND_VOLUME = 100.f;
 }
 
-Menu::Menu(float width, float height, const Font& font, const Texture& back) 
-	: title(font),
+Menu::Menu(float width, float height, const sf::Font& font, const sf::Texture& back)
+	: 
+	settings(width, height, font, back), 
+	title(font),
 	Background(back)
 {
 	initializeMenuItems(width, height, font);
@@ -33,16 +35,16 @@ Menu::Menu(float width, float height, const Font& font, const Texture& back)
 
 Menu::~Menu() = default;
 
-void Menu::initializeMenuItems(float width, float height, const Font& font)
+void Menu::initializeMenuItems(float width, float height, const sf::Font& font)
 {
-	const vector<string> menuItemLabels = {
+	const std::vector<std::string > menuItemLabels = {
 		"Play",
 		"Settings",
 		"Exit"
 	};
 	for (size_t i = 0; i < menuItemLabels.size(); i++)
 	{
-		Text text(font, menuItemLabels[i]);
+		sf::Text text(font, menuItemLabels[i]);
 
 		const bool isSelected = (i == selectedIndex);
 		text.setFillColor(i == selectedIndex ? SELECTED_COLOR : UNSELECTED_COLOR);
@@ -59,12 +61,12 @@ void Menu::initializeMenuItems(float width, float height, const Font& font)
 
 void Menu::initializeSounds()
 {
-	confirmSoundBuffer = make_unique<SoundBuffer>("./resources/confirm.mp3");
-	confirmSound = make_unique<Sound>(*confirmSoundBuffer);
+	confirmSoundBuffer = std::make_unique<sf::SoundBuffer>("./resources/confirm.mp3");
+	confirmSound = std::make_unique<sf::Sound>(*confirmSoundBuffer);
 	confirmSound->setVolume(SOUND_VOLUME);
 
-	choiceSoundBuffer = make_unique<SoundBuffer>("./resources/choice.mp3");
-	choiceSound = make_unique<Sound>(*choiceSoundBuffer);
+	choiceSoundBuffer = std::make_unique<sf::SoundBuffer>("./resources/choice.mp3");
+	choiceSound = std::make_unique<sf::Sound>(*choiceSoundBuffer);
 	choiceSound->setVolume(SOUND_VOLUME);
 }
 
@@ -73,13 +75,13 @@ void Menu::initializeTitle(float width, float height)
 	title.setString("Snake Game");
 	title.setCharacterSize(TITLE_CHAR_SIZE);
 	title.setFillColor(TITLE_COLOR);
-	title.setStyle(Text::Bold | Text::Underlined);
+	title.setStyle(sf::Text::Bold | sf::Text::Underlined);
 
 	const float xPosition = static_cast<float>(width) / 2.0f - TITLE_X_OFFSET;
 	const float yPosition = static_cast<float>(height) / MENU_ITEM_Y_START - TITLE_Y_OFFSET;
 	title.setPosition({ xPosition, yPosition });
 }
-void Menu::draw(RenderWindow& window)
+void Menu::draw(sf::RenderWindow& window)
 {
 	window.draw(Background);
 	window.draw(title);
@@ -90,6 +92,11 @@ void Menu::draw(RenderWindow& window)
 	float scale = 1.f + 0.05f * sin(time * 0.005f);
 	for (const auto& item : menuItems)
 		window.draw(item);
+}
+
+void Menu::drawSettings(sf::RenderWindow& window)
+{
+	settings.draw(window);
 }
 
 void Menu::updateMenuItemsAnimation()

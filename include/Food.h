@@ -3,9 +3,6 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "Constants.h"
-//❤//
-using namespace std;
-using namespace sf;
 
 struct Segment;
 
@@ -14,9 +11,9 @@ class Food
 public:
 	Food();
 	~Food();
-	explicit Food(const deque<Segment>& snake);
-	void respawn(const deque<Segment>& snake);
-	void draw(RenderWindow& window);
+	explicit Food(const std::deque<Segment>& snake);
+	void respawn(const std::deque<Segment>& snake);
+	void draw(sf::RenderWindow& window);
 	void loadEatSound();
 	void playEatSound();
 
@@ -32,8 +29,8 @@ private:
 	unsigned x = 0;
 	unsigned y = 0;
 
-	CircleShape shape;
-	unique_ptr<SoundBuffer> eatSoundBuffer;
-	unique_ptr<Sound> eatSound;
+	sf::CircleShape shape;
+	std::unique_ptr<sf::SoundBuffer> eatSoundBuffer;
+	std::unique_ptr<sf::Sound> eatSound;
 };
 

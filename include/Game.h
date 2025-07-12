@@ -3,14 +3,11 @@
 #include <SFML/Graphics.hpp>
 #include "Food.h"
 #include "Snake.h"
-//❤//
-using namespace std;
-using namespace sf;
 
 class Game
 {
 public:
-	explicit Game(Image& icon);
+	explicit Game(sf::Image& icon);
 	void run();
 
 	Game(const Game&) = delete;
@@ -22,8 +19,8 @@ private:
 	void reset();
 	void updateGameState(float deltaTime);
 
-	RenderWindow window;
-	Clock gameClock;
+	sf::RenderWindow window;
+	sf::Clock gameClock;
 	Snake snake;
 	Food food;
 	float gameTimer = 0.f;

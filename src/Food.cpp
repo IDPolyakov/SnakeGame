@@ -2,7 +2,7 @@
 #include "../include/Snake.h"
 
 namespace {
-	const Color FOOD_COLOR = Color::Red;
+	const sf::Color FOOD_COLOR = sf::Color::Red;
 	constexpr float SOUND_VOLUME = 100.f;
 }
 
@@ -11,7 +11,7 @@ Food::Food()
 	initializeShape();
 }
 
-Food::Food(const deque<Segment>& snake)
+Food::Food(const std::deque<Segment>& snake)
 {
 	initializeShape();
 	respawn(snake);
@@ -26,11 +26,11 @@ void Food::initializeShape()
 	shape.setOrigin({ shape.getRadius(), shape.getRadius() });
 }
 
-void Food::respawn(const deque<Segment>& snake)
+void Food::respawn(const std::deque<Segment>& snake)
 {
-	static mt19937 rnd(random_device{}());
-	uniform_int_distribution<ll> dice_x(0, WIDTH / CELL - 1);
-	uniform_int_distribution<ll> dice_y(0, HEIGHT / CELL - 1);
+	static std::mt19937 rnd(std::random_device{}());
+	std::uniform_int_distribution<ll> dice_x(0, WIDTH / CELL - 1);
+	std::uniform_int_distribution<ll> dice_y(0, HEIGHT / CELL - 1);
 
 	do
 	{
@@ -48,15 +48,15 @@ bool Food::isPositionValid(size_t foodX, size_t foodY, const std::deque<Segment>
 	}
 	return true;
 }
-void Food::draw(RenderWindow& window) 
+void Food::draw(sf::RenderWindow& window) 
 {
 	shape.setPosition({ float((x + 0.5f) * CELL), float((y + 0.5f) * CELL) });
 	window.draw(shape);
 }
 void Food::loadEatSound()
 {
-	eatSoundBuffer = make_unique<SoundBuffer>("./resources/eat.mp3");
-	eatSound = make_unique<Sound>(*eatSoundBuffer);
+	eatSoundBuffer = std::make_unique<sf::SoundBuffer>("./resources/eat.mp3");
+	eatSound = std::make_unique<sf::Sound>(*eatSoundBuffer);
 	eatSound->setVolume(SOUND_VOLUME);
 }
 void Food::playEatSound()

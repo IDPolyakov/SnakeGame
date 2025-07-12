@@ -2,17 +2,16 @@
 #include <bits/stdc++.h>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-//❤//
-using namespace std;
-using namespace sf;
+#include "Settings.h"
 
 class Menu
 {
 public:
-	Menu(float width, float height, const Font& font, const Texture& background);
+	Menu(float width, float height, const sf::Font& font, const sf::Texture& background);
 	~Menu();
 
-	void draw(RenderWindow& window);
+	void draw(sf::RenderWindow& window);
+	void drawSettings(sf::RenderWindow& window);
 	void moveUp();
 	void moveDown();
 
@@ -24,7 +23,7 @@ public:
 	Menu& operator = (const Menu&) = delete;
 
 private:
-	void initializeMenuItems(float width, float height, const Font& font);
+	void initializeMenuItems(float width, float height, const sf::Font& font);
 	void initializeSounds();
 	void initializeTitle(float width, float height);
 	void updateMenuItemsAnimation();
@@ -32,14 +31,17 @@ private:
 	void updateSelectedItem(size_t index, bool isSelected);
 
 private:
-	Clock clock;
-	Text title;
+	sf::Clock clock;
+	sf::Text title;
 	size_t selectedIndex = 0;
-	vector<Text> menuItems;
-	Sprite Background;
+	std::vector<sf::Text> menuItems;
 
-	unique_ptr<SoundBuffer> choiceSoundBuffer;
-	unique_ptr<SoundBuffer> confirmSoundBuffer;
-	unique_ptr<Sound> choiceSound;
-	unique_ptr<Sound> confirmSound;
+	const sf::Sprite Background;
+
+	Settings settings;
+
+	std::unique_ptr<sf::SoundBuffer> choiceSoundBuffer;
+	std::unique_ptr<sf::SoundBuffer> confirmSoundBuffer;
+	std::unique_ptr<sf::Sound> choiceSound;
+	std::unique_ptr<sf::Sound> confirmSound;
 };

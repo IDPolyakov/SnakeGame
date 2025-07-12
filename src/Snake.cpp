@@ -1,9 +1,9 @@
 #include "../include/Snake.h"
 
 namespace {
-	const Color HEAD_COLOR(0, 100, 0);
-	const Color BODY_COLOR = Color::Green;
-	const Color EYE_COLOR = Color::White;
+	const sf::Color HEAD_COLOR(0, 100, 0);
+	const sf::Color BODY_COLOR = sf::Color::Green;
+	const sf::Color EYE_COLOR = sf::Color::White;
 	const float SPEED_INCREASE_FACTOR = 0.98f;
 	const float EYE_RADIUS = CELL / 10.f;
 	const float EYE_OFFSET_X1 = CELL / 5.f;
@@ -19,13 +19,13 @@ Snake::Snake()
 
 void Snake::handleInput()
 {
-	if ((Keyboard::isKeyPressed(Keyboard::Key::Up) || Keyboard::isKeyPressed(Keyboard::Key::W)) && direction != Direction::Down)
+	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) && direction != Direction::Down)
 		direction = Direction::Up;
-	else if ((Keyboard::isKeyPressed(Keyboard::Key::Down) || Keyboard::isKeyPressed(Keyboard::Key::S)) && direction != Direction::Up)
+	else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) && direction != Direction::Up)
 		direction = Direction::Down;
-	else if ((Keyboard::isKeyPressed(Keyboard::Key::Left) || Keyboard::isKeyPressed(Keyboard::Key::A)) && direction != Direction::Right)
+	else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) && direction != Direction::Right)
 		direction = Direction::Left;
-	else if ((Keyboard::isKeyPressed(Keyboard::Key::Right) || Keyboard::isKeyPressed(Keyboard::Key::D)) && direction != Direction::Left)
+	else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) && direction != Direction::Left)
 		direction = Direction::Right;
 }
 
@@ -89,11 +89,11 @@ size_t Snake::getScore() const
 {
 	return body.size() - 1;
 }
-const deque<Segment>& Snake::getBody() const
+const std::deque<Segment>& Snake::getBody() const
 {
 	return body;
 }
-void Snake::draw(RenderWindow& window, float alpha)
+void Snake::draw(sf::RenderWindow& window, float alpha)
 {
 	//RectangleShape rect(Vector2f(CELL, CELL));
 	
@@ -105,20 +105,6 @@ void Snake::draw(RenderWindow& window, float alpha)
 		const float interpX = (1 - alpha) * prevX + alpha * body[i].x;
 		const float interpY = (1 - alpha) * prevY + alpha * body[i].y;
 
-		/*rect.setPosition(Vector2f(interpX * CELL, interpY * CELL));
-		rect.setFillColor(i == 0 ? Color(0, 100, 0) : Color::Green);
-		window.draw(rect);
-
-		if (i == 0)
-		{
-
-			CircleShape eye(2);
-			eye.setFillColor(Color::White);
-			eye.setPosition(Vector2f(interpX * CELL + 4, interpY * CELL + 4));
-			window.draw(eye);
-			eye.setPosition(Vector2f(interpX * CELL + 12, interpY * CELL + 4));
-			window.draw(eye);
-		}*/
 		if (i == 0)
 			drawHead(window, interpX, interpY);
 		else
@@ -126,11 +112,11 @@ void Snake::draw(RenderWindow& window, float alpha)
 	}
 }
 
-void Snake::drawHead(RenderWindow& window, const float x, const float y) 
+void Snake::drawHead(sf::RenderWindow& window, const float x, const float y) 
 {
 	drawBodySegment(window, x, y, true);
 
-	CircleShape eye(EYE_RADIUS);
+	sf::CircleShape eye(EYE_RADIUS);
 	eye.setFillColor(EYE_COLOR);
 
 	const float pixelX = x * CELL;
@@ -143,9 +129,9 @@ void Snake::drawHead(RenderWindow& window, const float x, const float y)
 	window.draw(eye);
 }
 
-void Snake::drawBodySegment(RenderWindow& window, const float x, const float y, bool isHead)
+void Snake::drawBodySegment(sf::RenderWindow& window, const float x, const float y, bool isHead)
 {
-	RectangleShape segment(Vector2f(CELL, CELL));
+	sf::RectangleShape segment(sf::Vector2f(CELL, CELL));
 	segment.setPosition({ x * CELL, y * CELL });
 	segment.setFillColor(isHead ? HEAD_COLOR : BODY_COLOR);
 	window.draw(segment);
