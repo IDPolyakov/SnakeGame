@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 #include "../include/Game.h"
-#include "../include/menu/Menu.h";
+#include "../include/menu/MainMenu.h";
 
 int main()
 {
@@ -9,7 +9,7 @@ int main()
 	window.setIcon(icon);
 	sf::Font font("./resources/fonts/arial.ttf");
 	sf::Texture back("./resources/background.jpg");
-	Menu menu(WIDTH, HEIGHT, font, back);
+	MainMenu menu(WIDTH, HEIGHT, font, back);
 	enum class gameState { MenuWin, SettingsWin, GameWin };
 	gameState currentState = gameState::MenuWin;
 	while (window.isOpen())
@@ -31,7 +31,7 @@ int main()
 				}
 				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter))
 				{
-					menu.playConfirmSound();
+					//menu.playConfirmSound();
 					/*if (menu.getSelectedIndex() == 0)
 					{
 						currentState = gameState::GameWin;
@@ -62,7 +62,7 @@ int main()
 			menu.draw(window);
 			break;
 		case gameState::SettingsWin:
-			menu.drawSettings(window);
+			//menu.drawSettings(window);
 			break;
 		case gameState::GameWin:
 			Game game(icon);
