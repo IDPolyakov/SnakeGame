@@ -1,12 +1,12 @@
-#include "../../include/menu/BaseMenu.h"
+#include "../../include/menu/Core/IMenu.h"
 
-BaseMenu::BaseMenu(float width, float height, const sf::Font& font, const sf::Texture& back)
+IMenu::IMenu(float width, float height, const sf::Font& font, const sf::Texture& back)
 	:
 	title(font),
 	background(back)
 {}
 
-void BaseMenu::moveSelection(size_t direction)
+void IMenu::moveSelection(size_t direction)
 {
 	const size_t newIndex = selectedIndex + direction;
 
@@ -20,23 +20,23 @@ void BaseMenu::moveSelection(size_t direction)
 	}
 }
 
-void BaseMenu::updateSelectedItem(size_t index, bool isSelected)
+void IMenu::updateSelectedItem(size_t index, bool isSelected)
 {
 	menuItems[index].setFillColor(isSelected ? SELECTED_COLOR : UNSELECTED_COLOR);
 	menuItems[index].setCharacterSize(isSelected ? SELECTED_CHAR_SIZE : UNSELECTED_CHAR_SIZE);
 }
 
-void BaseMenu::moveUp()
+void IMenu::moveUp()
 {
 	moveSelection(-1);
 }
 
-void BaseMenu::moveDown()
+void IMenu::moveDown()
 {
 	moveSelection(1);
 }
 
-size_t BaseMenu::getSelectedIndex() const
+size_t IMenu::getSelectedIndex() const
 {
 	return selectedIndex;
 }

@@ -2,7 +2,6 @@
 
 #include <bits/stdc++.h>
 #include <SFML/Graphics.hpp>
-#include "IRenderable.h"
 
 namespace {
 	constexpr float MENU_ITEM_X_OFFSET = 60.0f;
@@ -25,7 +24,7 @@ namespace {
 	constexpr float ANIMATION_SCALE = 0.05f;
 }
 
-class BaseMenu : public IRenderable
+class IMenu
 {
 protected: 
 	sf::Text title;
@@ -36,8 +35,6 @@ protected:
 
 	const sf::Sprite background;
 
-	//SoundManager& sounds;
-
 protected:
 	virtual void initializeMenuItems(float width, float height, const sf::Font& font) = 0;
 	virtual void initializeTitle(float width, float height) = 0;
@@ -46,14 +43,14 @@ protected:
 	void updateSelectedItem(size_t index, bool isSelected);
 	
 public:
-	BaseMenu(float width, float height, const sf::Font& font, const sf::Texture& back);
+	IMenu(float width, float height, const sf::Font& font, const sf::Texture& back);
 	
 	void moveUp();
 	void moveDown();
 	size_t getSelectedIndex() const;
 	
-	BaseMenu(const BaseMenu&) = delete;
-	BaseMenu& operator = (const BaseMenu&) = delete;
+	IMenu(const IMenu&) = delete;
+	IMenu& operator = (const IMenu&) = delete;
 
-	virtual ~BaseMenu() = default;
+	virtual ~IMenu() = default;
 };

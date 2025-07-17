@@ -1,20 +1,20 @@
-#include "../../include/menu/MainMenu.h"
+#include "../../include/menu/SettingsMenu.h"
 
-MainMenu::MainMenu(float width, float height, const sf::Font& font, const sf::Texture& back, SoundManager* Sounds_)
+SettingsMenu::SettingsMenu(float width, float height, const sf::Font& font, const sf::Texture& back, SoundManager* Sounds_) 
 	:
-	IMenu(width, height, font, back),
+	IMenu(width, height, font, back), 
 	IScene(Sounds_)
-{ 
+{
 	initializeMenuItems(width, height, font);
 	initializeTitle(width, height);
 }
 
-void MainMenu::initializeMenuItems(float width, float height, const sf::Font& font)
+void SettingsMenu::initializeMenuItems(float width, float height, const sf::Font& font)
 {
 	const std::vector<std::string > menuItemLabels = {
-		"Play",
-		"Settings",
-		"Exit"
+		"Volume",
+		"Level",
+		"Back"
 	};
 	for (size_t i = 0; i < menuItemLabels.size(); i++)
 	{
@@ -33,18 +33,20 @@ void MainMenu::initializeMenuItems(float width, float height, const sf::Font& fo
 	}
 }
 
-void MainMenu::initializeTitle(float width, float height)
+
+void SettingsMenu::initializeTitle(float width, float height)
 {
-	title.setString("Snake Game");
+	title.setString("Settings");
 	title.setCharacterSize(TITLE_CHAR_SIZE);
 	title.setFillColor(TITLE_COLOR);
 	title.setStyle(sf::Text::Bold | sf::Text::Underlined);
 
-	const float xPosition = static_cast<float>(width) / 2.0f - TITLE_X_OFFSET;
+	const float xPosition = static_cast<float>(width) / 2.0f - TITLE_X_OFFSET + 70;
 	const float yPosition = static_cast<float>(height) / MENU_ITEM_Y_START - TITLE_Y_OFFSET;
 	title.setPosition({ xPosition, yPosition });
 }
-void MainMenu::updateMenuItemsAnimation()
+
+void SettingsMenu::updateMenuItemsAnimation()
 {
 	const float time = static_cast<float>(clock.getElapsedTime().asMilliseconds());
 	const float scale = 1.f + ANIMATION_SCALE * sin(time * ANIMATION_SPEED);
@@ -58,17 +60,18 @@ void MainMenu::updateMenuItemsAnimation()
 	}
 }
 
-void MainMenu::render(sf::RenderWindow& window)
+void SettingsMenu::render(sf::RenderWindow& window)
 {
 	window.draw(background);
 	window.draw(title);
 
-	updateMenuItemsAnimation();
-	for (const auto& item : menuItems)
-		window.draw(item);
+	for (const auto& option : menuItems)
+	{
+		window.draw(option);
+	}
 }
 
-gameState MainMenu::handleInput(sf::RenderWindow& window)
+gameState SettingsMenu::handleInput(sf::RenderWindow& window)
 {
 	while (const auto event = window.pollEvent())
 	{
@@ -89,19 +92,18 @@ gameState MainMenu::handleInput(sf::RenderWindow& window)
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter))
 		{
 			Sounds->playSound("confirm");
+			_Thrd_sleep_for(100);
 			switch (getSelectedIndex())
 			{
 			case 0:
-				std::clog << "MainMenu play button pressed\n";
-				return gameState::GameWindow;
+				std::clog << "Settings volume button pressed\n";
 				break;
 			case 1:
-				std::clog << "MainMenu settings button pressed\n";
-				return gameState::SettingsWindow;
+				std::clog << "Settings level button pressed\n";
 				break;
 			case 2:
-				std::clog << "MainMenu exit button pressed\n";
-				return gameState::Exit;
+				std::clog << "Settings back button pressed\n";
+				return gameState::Back;
 				break;
 			}
 		}
