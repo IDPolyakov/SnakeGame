@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
-#include "../include/Game.h"
-#include "../include/menu/MainMenu.h"
-#include "../include/menu/SettingsMenu.h"
+#include "../include/Scenes/MainMenu.h"
+#include "../include/Scenes/SettingsMenu.h"
+#include "../include/Scenes/GameScene.h"
 
 int main()
 {
@@ -15,62 +15,41 @@ int main()
 
 	std::unique_ptr<SoundManager> Sounds_(new SoundManager);
 
-	std::unique_ptr<IScene> current(new MainMenu(WIDTH, HEIGHT, font, back, Sounds_.get()));
+	std::map<std::string, std::shared_ptr<IScene>> states;
+	states["Menu"].reset(new MainMenu(WIDTH, HEIGHT, font, back, Sounds_.get()));
+	states["Settings"].reset(new SettingsMenu(WIDTH, HEIGHT, font, back, Sounds_.get()));
+
+	std::shared_ptr<IScene> current = states["Menu"];
 
 	gameState currentState;
 
+	bool isPlaying = false;
+
 	while (window.isOpen())
 	{
-		/*
-		while (const auto event = window.pollEvent())
-		{
-			if (event->is<sf::Event::Closed>())
-				window.close();
-
-			if (currentState != gameState::GameWindow)
-			{
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
-				{
-					current->moveUp();
-				}
-				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
-				{
-					current->moveDown();
-				}
-				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter))
-				{
-					switch (current->getSelectedIndex())
-					{
-					case 0:
-						currentState = gameState::GameWindow;
-						break;
-					case 1:
-						currentState = gameState::SettingsWindow;
-						current.reset(new SettingsMenu(WIDTH, HEIGHT, font, back));
-						break;
-					case 2:
-						window.close();
-					}
-				}
-			}
-		}*/
-
 		window.clear(sf::Color::Black);
 		currentState = current->handleInput(window);
 		switch (currentState)
 		{
 		case gameState::Back:
-			current.reset(new MainMenu(WIDTH, HEIGHT, font, back, Sounds_.get()));
+			Sounds_->playMusic("backMenuMusic");
+			current = states["Menu"];
+			isPlaying = false;
 			break;
 		case gameState::SettingsWindow:
-			current.reset(new SettingsMenu(WIDTH, HEIGHT, font, back, Sounds_.get()));
+			_Thrd_sleep_for(100);
+			current = states["Settings"];
 			break;
 		case gameState::Exit:
 			window.close();
 			break;
 		case gameState::GameWindow:
-			Game game(icon);
-			game.run();
+			if (!isPlaying)
+			{
+				Sounds_->playMusic("backGameMusic");
+				current.reset(new GameScene(Sounds_.get()));
+				isPlaying = true;
+			}
 			break;
 		}
 

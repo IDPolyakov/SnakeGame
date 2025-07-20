@@ -1,8 +1,8 @@
 ﻿#pragma once
 #include <bits/stdc++.h>
 #include <SFML/Graphics.hpp>
-#include "Food.h"
-#include "Snake.h"
+#include "Entities/Food.h"
+#include "Entities/Snake.h"
 
 class Game
 {
